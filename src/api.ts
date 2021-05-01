@@ -8,7 +8,8 @@ export type SocketReader = (data: Buffer) => void;
 export default class MinerAPI {
   /**
    * Saves the URL for further use
-   * @param {string} url contains the url of the Mining API
+   * @param {string} host contains the host of the Mining api
+   * @param {number} port contains the port for the api
    */
   constructor(private host: string, private port: number) {}
   /**
