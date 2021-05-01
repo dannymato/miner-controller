@@ -9,7 +9,7 @@
     "make": "tsc && pkg dist/index.js --outpath bin --outfile miner-controller"
   },
   "author": "",
-  "license": "ISC",
+  "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@types/express": "^4.17.11",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
