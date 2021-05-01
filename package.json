@@ -1,12 +1,13 @@
 {
-  "name": "miner_controller",
+  "name": "miner-controller",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "bin": "dist/index.js",
   "scripts": {
     "start": "tsc && node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "make": "tsc && pkg dist/index.js --outpath bin --outfile miner-controller"
+    "make": "tsc && pkg ."
   },
   "author": "",
   "license": "GPL-3.0-or-later",
@@ -21,5 +22,10 @@
   },
   "dependencies": {
     "express": "^4.17.1"
+  },
+  "pkg": {
+    "scripts": "dist/**/*.js",
+    "targets": ["linux", "macos", "win"],
+    "outputPath": "bin"
   }
 }
