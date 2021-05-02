@@ -28,6 +28,15 @@ export default class MinerAPI {
       host: this.host,
     });
 
+    // TODO: Probably wanna do something other than panic
+    // Wanna send a message upwards so that the request gets an error
+    socket.on('error', (err) => {
+      console.error(`Could not connect to miner at address `+
+        `${this.host}:${this.port}`);
+      console.error(err.message);
+      process.exit(1);
+    });
+
     const commandObj = {
       command: command,
       parameters: parameters,
