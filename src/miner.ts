@@ -47,11 +47,6 @@ interface Count {
   Count: number;
 }
 
-type SummaryCallback = (data: MinerReturn<Summary>) => void;
-type GpusCallback = (data: MinerReturn<GPUs>) => void;
-type CountCallback = (data: MinerReturn<Count>) => void;
-type StatusCallback = (data: Status) => void;
-
 /**
  * Class contains methods to retrieve items from the miner
  */
@@ -66,14 +61,18 @@ class Miner {
       private api: MinerAPI) {}
   /**
    * Grabs the summary and passes it to the data
-   * @param {SummaryCallback} callback What to do with the data
+   * @return {Promise<MinerReturn<Summary>>} A promise for the async api call
    */
-  public summary(callback: SummaryCallback) {
+  public summary() : Promise<MinerReturn<Summary>> {
     const command = 'summary';
-    const params = '';
 
-    this.api.sendCommand(command, params, (data) => {
-      callback(this.parseMessage<Summary>(data.toString(), 'SUMMARY'));
+    return new Promise<MinerReturn<Summary>>((resolve, reject) => {
+      this.api.sendCommand(command)
+          .then((value) => {
+            resolve(this.parseMessage<Summary>(value.toString(), 'SUMMARY'));
+          }).catch((err) => {
+            reject(err);
+          });
     });
   }
 
@@ -95,55 +94,78 @@ class Miner {
   /**
    * Grabs info about the specified GPU
    * @param {string} index The GPU index to grab
-   * @param {GpusCallback} callback What to do with the parsed data
+   * @return {Promise<MinerReturn<GPUs>>} Promise for async API calls
    */
-  public gpu(index: string, callback: GpusCallback) {
+  public gpu(index: string) : Promise<MinerReturn<GPUs>> {
     const command = 'gpu';
     const params= index;
 
-    this.api.sendCommand(command, params, (data) => {
-      callback(this.parseMessage<GPUs>(data.toString(), 'GPU'));
+    return new Promise<MinerReturn<GPUs>>((resolve, reject) => {
+      this.api.sendCommand(command, params)
+          .then((value) => {
+            resolve(this.parseMessage<GPUs>(value.toString(), 'GPU'));
+          })
+          .catch((err) => {
+            reject(err);
+          });
     });
   }
 
   /**
-   *
-   * @param {CountCallback} callback
+   * Get the amount of GPUs connected to the miner
+   * @return {Promise<MinerReturn<Count>>} Promise to handle async API calls
    */
-  public gpuCount(callback: CountCallback) {
+  public gpuCount() : Promise<MinerReturn<Count>> {
     const command = 'gpucount';
-    const params = '';
 
-    this.api.sendCommand(command, params, (data) => {
-      callback(this.parseMessage(data.toString(), 'GPUS'));
+    return new Promise<MinerReturn<Count>>((resolve, reject) => {
+      this.api.sendCommand(command)
+          .then((value) => {
+            resolve(this.parseMessage(value.toString(), 'GPUS'));
+          })
+          .catch((err) => {
+            reject(err);
+          });
     });
   }
 
   /**
    * Enable the specified GPU
    * @param {string} index The index of the gpu to enable
-   * @param {StatusCallback} callback What to do with the data
+   * @return {Promise<Status>} Promise to handle async API calls
    */
-  public enableGpu(index: string, callback: StatusCallback) {
+  public enableGpu(index: string) : Promise<Status> {
     const command = 'gpuenable';
     const params = index;
 
-    this.api.sendCommand(command, params, (data) => {
-      callback(this.statusOnlyParseMessage(data.toString()));
+    return new Promise<Status>((resolve, reject) => {
+      this.api.sendCommand(command, params)
+          .then((value) => {
+            resolve(this.statusOnlyParseMessage(value.toString()));
+          })
+          .catch((err) => {
+            reject(err);
+          });
     });
   }
 
   /**
    * Disable the specified GPU
    * @param {string} index The index of the gpu to disable
-   * @param {StatusCallback} callback What to do with the data
+   * @return {Promise<Status>} Promise to handle async API calls
    */
-  public disableGpu(index: string, callback: StatusCallback) {
+  public disableGpu(index: string) : Promise<Status> {
     const command = 'gpudisable';
     const params = index;
 
-    this.api.sendCommand(command, params, (data) => {
-      callback(this.statusOnlyParseMessage(data.toString()));
+    return new Promise<Status>((resolve, reject) => {
+      this.api.sendCommand(command, params)
+          .then((value) => {
+            resolve(this.statusOnlyParseMessage(value.toString()));
+          })
+          .catch((err) => {
+            reject(err);
+          });
     });
   }
 

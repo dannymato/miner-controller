@@ -17,24 +17,31 @@ export default class MinerAPI {
    * Commands can be found here https://github.com/sgminer-dev/sgminer/blob/master/doc/API.md
    * @param {string} command Command to send to the miner
    * @param {string} parameters Optional parameters to send to the miner
-   * @param {SocketReader} callback Callback function to read from the stream
+   * @return {Promise<Buffer>} A promise for the return of the API
    */
-  public sendCommand(command: string, parameters: string,
-      callback: SocketReader) {
+  public sendCommand(command: string, parameters = '') : Promise<Buffer> {
     const socket = net.createConnection({
       writable: true,
       readable: true,
       port: this.port,
       host: this.host,
+      timeout: 5000, // Could change this to be a config option
     });
 
-    // TODO: Probably wanna do something other than panic
-    // Wanna send a message upwards so that the request gets an error
-    socket.on('error', (err) => {
-      console.error(`Could not connect to miner at address `+
-        `${this.host}:${this.port}`);
-      console.error(err.message);
-      process.exit(1);
+    const returnPromise = new Promise<Buffer>((resolve, reject) => {
+      socket.on('error', (err) => {
+        reject(new Error(`Could not connect to miner at ${this.host}:` +
+        `${this.port}\n${err.message}`));
+      });
+
+      socket.on('timeout', () => {
+        reject(new Error(`Timed out connecting to miner at ${this.host}:`+
+          `${this.port}`));
+      });
+
+      socket.on('data', (data) => {
+        resolve(data);
+      });
     });
 
     const commandObj = {
@@ -42,8 +49,8 @@ export default class MinerAPI {
       parameters: parameters,
     };
 
-    socket.on('data', callback);
-
     socket.write(JSON.stringify(commandObj));
+
+    return returnPromise;
   }
 }

@@ -1,4 +1,4 @@
-import express from 'express';
+import express, {Response} from 'express';
 import createMiner from './miner';
 const app = express();
 const port = 3000;
@@ -6,37 +6,56 @@ const port = 3000;
 // TODO: Load this from a config file or something like that
 const miner = createMiner('localhost', 4028);
 
+// Common method to catch mining API errors
+const errCatch = (res: Response) =>
+  (err: Error) =>
+    res.status(500)
+        .send({message: err.message});
+
 // Check for miner liveness
-miner.summary(() => {});
+miner.summary().catch((err) => {
+  console.error(err.message);
+  process.exit(1);
+});
 
 app.get('/summary', (req, res) => {
-  miner.summary((data) => {
-    res.send(data);
-  });
+  miner.summary()
+      .then((data) => {
+        res.send(data);
+      })
+      .catch(errCatch(res));
 });
 
 app.get('/gpus/count', (req, res) => {
-  miner.gpuCount((data) => {
-    res.send(data);
-  });
+  miner.gpuCount()
+      .then((data) => {
+        res.send(data);
+      })
+      .catch(errCatch(res));
 });
 
 app.put('/gpus/:index/enable', (req, res) => {
-  miner.enableGpu(req.params['index'], (data) => {
-    res.send(data);
-  });
+  miner.enableGpu(req.params['index'])
+      .then((data) => {
+        res.send(data);
+      })
+      .catch(errCatch(res));
 });
 
 app.put('/gpus/:index/disable', (req, res) => {
-  miner.disableGpu(req.params['index'], (data) => {
-    res.send(data);
-  });
+  miner.disableGpu(req.params['index'])
+      .then((data) => {
+        res.send(data);
+      })
+      .catch(errCatch(res));
 });
 
 app.get('/gpus/:index', (req, res) => {
-  miner.gpu(req.params['index'], (data) => {
-    res.send(data);
-  });
+  miner.gpu(req.params['index'])
+      .then((data) => {
+        res.send(data);
+      })
+      .catch(errCatch(res));
 });
 
 app.listen(port, () => {
