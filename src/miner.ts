@@ -1,5 +1,6 @@
 import MinerAPI from './api';
 
+// TODO: Move API stuff into a types submodule
 interface MinerReturn<ItemType extends Item> {
   status: Status;
   data: ItemType;
@@ -175,6 +176,7 @@ class Miner {
 }
 
 /**
+ * Constructs a miner
  * @param {string} host host that points to the miner
  * @param {number} port port of the MinerAPI
  * @return {Miner} returns a newly created miner

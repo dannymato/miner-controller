@@ -6,6 +6,9 @@ const port = 3000;
 // TODO: Load this from a config file or something like that
 const miner = createMiner('localhost', 4028);
 
+// Check for miner liveness
+miner.summary(() => {});
+
 app.get('/summary', (req, res) => {
   miner.summary((data) => {
     res.send(data);
@@ -37,6 +40,6 @@ app.get('/gpus/:index', (req, res) => {
 });
 
 app.listen(port, () => {
-  return console.log(`server is listening on ${port}`);
+  return console.log(`Server is listening on ${port}`);
 });
 
