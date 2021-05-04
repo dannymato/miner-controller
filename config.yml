@@ -1,0 +1,3 @@
+host: localhost
+port: 4028
+minerTimeout: 5000

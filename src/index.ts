@@ -1,10 +1,12 @@
 import express, {Response} from 'express';
 import createMiner from './miner';
+import loadConfig from './config';
 const app = express();
 const port = 3000;
 
-// TODO: Load this from a config file or something like that
-const miner = createMiner('localhost', 4028);
+const config = loadConfig('./config.yml');
+const miner = createMiner(config);
+
 
 // Common method to catch mining API errors
 const errCatch = (res: Response) =>
@@ -13,6 +15,7 @@ const errCatch = (res: Response) =>
         .send({message: err.message});
 
 // Check for miner liveness
+// Should this be moved to the createMiner?
 miner.summary().catch((err) => {
   console.error(err.message);
   process.exit(1);

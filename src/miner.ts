@@ -1,4 +1,5 @@
 import MinerAPI from './api';
+import {Config} from './config';
 
 // TODO: Move API stuff into a types submodule
 interface MinerReturn<ItemType extends Item> {
@@ -199,11 +200,10 @@ class Miner {
 
 /**
  * Constructs a miner
- * @param {string} host host that points to the miner
- * @param {number} port port of the MinerAPI
+ * @param {Config} config Has all the configurations for the app
  * @return {Miner} returns a newly created miner
  */
-export default function createMiner(host: string, port: number) : Miner {
-  const api = new MinerAPI(host, port);
-  return new Miner(host, port, api);
+export default function createMiner(config: Config) : Miner {
+  const api = new MinerAPI(config.host, config.port, config.minerTimeout);
+  return new Miner(config.host, config.port, api);
 }

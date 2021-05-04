@@ -21,11 +21,16 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "yaml": "^1.10.2"
   },
   "pkg": {
     "scripts": "dist/**/*.js",
-    "targets": ["linux", "macos", "win"],
+    "targets": [
+      "linux",
+      "macos",
+      "win"
+    ],
     "outputPath": "bin"
   }
 }

@@ -10,8 +10,10 @@ export default class MinerAPI {
    * Saves the URL for further use
    * @param {string} host contains the host of the Mining api
    * @param {number} port contains the port for the api
+   * @param {number} timout has the time to wait for the miner to respond (ms)
    */
-  constructor(private host: string, private port: number) {}
+  constructor(private host: string, private port: number,
+        private timeout: number) {}
   /**
    * Sends the specified command to the server
    * Commands can be found here https://github.com/sgminer-dev/sgminer/blob/master/doc/API.md
@@ -25,7 +27,7 @@ export default class MinerAPI {
       readable: true,
       port: this.port,
       host: this.host,
-      timeout: 5000, // Could change this to be a config option
+      timeout: this.timeout, // Could change this to be a config option
     });
 
     const returnPromise = new Promise<Buffer>((resolve, reject) => {
